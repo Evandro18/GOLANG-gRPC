@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package protos;
+
+message Request {
+  Sale Sale = 1;
+}
+
+message Response {
+  Sale Sale = 1;
+}
+
+message Sale {
+  string Id = 1;
+  string Product = 2;
+  int64 Quantity = 3;
+}
+
+message ListSalesRes {
+  Sale Sale = 1;
+}
+
+message ListSalesReq {}
+
+message Success {
+  bool Sucess = 1;
+}
+
+service SalesService {
+  rpc AddSale(Request) returns (Response);
+  rpc ListSales(ListSalesReq) returns (stream ListSalesRes);
+}
