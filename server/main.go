@@ -135,3 +135,26 @@ func (s *SalesServer) ListSales(req *salespb.ListSalesReq, stream salespb.SalesS
 	}
 	return nil
 }
+
+func (s *SalesServer) ListById(ctx context.Context, req *salespb.RequestById) (*salespb.Sale, error) {
+	oid, err := primitive.ObjectIDFromHex(req.GetId())
+	if err != nil {
+		status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Inválid Id: %v", err),
+		)
+	}
+
+	result := salesdb.FindOne(mongoCtx, bson.M{"_id": oid})
+	data := &SaleItem{}
+
+	if err := result.Decode(&data); err != nil {
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Could not find sale with Object Id %s: %v", req.GetId(), err))
+	}
+	response := &salespb.Sale{
+		Id:       oid.Hex(),
+		Product:  data.Product,
+		Quantity: data.Quantity,
+	}
+	return response, nil
+}

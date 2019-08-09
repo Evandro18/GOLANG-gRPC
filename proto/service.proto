@@ -6,6 +6,10 @@ message Request {
   Sale Sale = 1;
 }
 
+message RequestById {
+  string Id = 1;
+}
+
 message Response {
   Sale Sale = 1;
 }
@@ -29,4 +33,5 @@ message Success {
 service SalesService {
   rpc AddSale(Request) returns (Response);
   rpc ListSales(ListSalesReq) returns (stream ListSalesRes);
+  rpc ListById(RequestById) returns (Sale);
 }

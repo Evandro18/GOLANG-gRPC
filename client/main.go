@@ -48,6 +48,20 @@ func main() {
 		}
 	})
 
+	g.GET("/sales/:Id", func(ctx *gin.Context) {
+		req := &salespb.RequestById{}
+		Id := ctx.Param("Id")
+		req.Id = Id
+		response, err := client.ListById(ctx, req)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": fmt.Sprint(err),
+			})
+		}
+
+		ctx.JSON(http.StatusOK, response)
+	})
+
 	g.POST("/sale", func(ctx *gin.Context) {
 		var json Sale
 		if err := ctx.ShouldBindJSON(&json); err != nil {
